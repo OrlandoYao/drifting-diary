@@ -1,0 +1,10 @@
+{
+  "title": "漂流日记本",
+  "subtitle": "由 17 位作者共同完成",
+  "supabase": {
+    "url": "https://tcewxdjralohitficqig.supabase.co",
+    "anonKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRjZXd4ZGpyYWxvaGl0ZmljcWlnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc3MzU4NjAsImV4cCI6MjEwMzMxMTg2MH0.msyab3SDYHdcn_RILytXvXpaL50OdxTDCfGGJSTV_A4"
+  },
+  "imageBase": "images",
+  "enableComments": true
+}

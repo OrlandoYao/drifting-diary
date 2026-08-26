@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>漂流日记本</title>
+  <link rel="stylesheet" href="css/theme.css?v=10">
+  <link rel="stylesheet" href="css/style.css?v=10">
+</head>
+<body>
+
+<!-- 纸张纹理叠加层 -->
+<div class="paper-texture"></div>
+
+<!-- 顶部导航 -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <h1 class="brand-title">漂流日记本</h1>
+      <span class="brand-sub" id="subtitle">漂流日记～～～～～</span>
+    </div>
+    <div class="controls">
+      <div class="view-switch">
+        <button class="view-btn active" data-view="wall" id="btn-wall">留言墙</button>
+        <button class="view-btn" data-view="calendar" id="btn-calendar">日历</button>
+        <button class="view-btn" data-view="journey" id="btn-journey">旅程</button>
+      </div>
+      <div class="filter-group">
+        <select id="filter-author" class="filter-select">
+          <option value="">全部作者</option>
+        </select>
+        <button class="jump-btn" id="jump-btn" title="跳转到某个日期或页码">🔍 跳转</button>
+        <button class="filter-clear" id="filter-clear" title="清除筛选">×</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- 主内容区 -->
+<main class="main-content">
+
+  <!-- 封面 Hero：名字录作为日记本封面 -->
+  <section class="hero" id="hero" style="display:none;">
+    <div class="hero-inner">
+      <div class="hero-cover" id="hero-cover" title="点击查看名字录大图">
+        <div class="hero-cover-tape tape-tl"></div>
+        <div class="hero-cover-tape tape-br"></div>
+        <img id="hero-cover-img" src="" alt="日记本封面" loading="lazy">
+        <span class="hero-cover-caption">名字录 · 这是我们的开始</span>
+      </div>
+      <div class="hero-text">
+        <h1 class="hero-title" id="hero-title">漂流日记本</h1>
+        <p class="hero-sub" id="hero-sub">由 17 位作者共同完成</p>
+        <p class="hero-stats" id="hero-stats"></p>
+        <div class="hero-actions">
+          <button class="hero-btn primary" id="hero-open-book">开始翻阅</button>
+          <button class="hero-btn" id="hero-open-wall">看看留言墙</button>
+        </div>
+      </div>
+    </div>
+    <span class="hero-sticker s1">✈️</span>
+    <span class="hero-sticker s2">📮</span>
+    <span class="hero-sticker s3">🌙</span>
+  </section>
+
+  <!-- 留言墙视图 -->
+  <section class="view-wall active" id="view-wall">
+
+    <!-- 留言墙入口：装饰墙板 + 便签预览 -->
+    <div class="message-wall-entry" id="message-wall-entry" style="display:none;">
+      <div class="wall-board">
+        <div class="wall-board-head">
+          <h2>留言墙</h2>
+          <p class="wall-board-sub" id="message-entry-count">大家贴在日记里的便签</p>
+          <button class="wall-board-more" id="message-wall-more">查看全部留言 →</button>
+        </div>
+        <div class="wall-board-notes" id="wall-board-notes">
+          <!-- 预览便签由 JS 动态生成 -->
+        </div>
+        <span class="wall-sticker st1">🌟</span>
+        <span class="wall-sticker st2">🌸</span>
+        <span class="wall-sticker st3">☕</span>
+        <div class="wall-board-tape tape-tl"></div>
+        <div class="wall-board-tape tape-tr"></div>
+      </div>
+    </div>
+
+    <!-- 作者索引快捷导航 -->
+    <nav class="author-index" id="author-index" style="display:none;">
+      <!-- 由 JS 动态生成 -->
+    </nav>
+
+    <!-- 便签墙：按作者分组 -->
+    <div class="wall-groups" id="wall-groups">
+      <!-- 作者分组由 JS 动态生成 -->
+    </div>
+
+    <div class="empty-state" id="empty-state" style="display:none;">
+      <p>没有找到匹配的页面</p>
+    </div>
+  </section>
+
+  <!-- 日历视图 -->
+  <section class="view-calendar" id="view-calendar">
+    <div class="cal-header">
+      <button class="cal-nav" id="cal-prev" aria-label="上个月">‹</button>
+      <span class="cal-title" id="cal-title"></span>
+      <button class="cal-nav" id="cal-next" aria-label="下个月">›</button>
+    </div>
+    <div class="cal-weekdays">
+      <span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span>
+    </div>
+    <div class="cal-grid" id="cal-grid"></div>
+    <div class="cal-day-panel" id="cal-day-panel" style="display:none;"></div>
+  </section>
+
+  <!-- 旅程视图 -->
+  <section class="view-journey" id="view-journey">
+    <p class="journey-summary" id="journey-summary"></p>
+    <div class="journey-timeline" id="journey-timeline"></div>
+  </section>
+
+</main>
+
+<!-- 详情层 overlay -->
+<div class="overlay" id="overlay">
+  <div class="overlay-content">
+    <div class="overlay-header">
+      <button class="overlay-nav overlay-prev" id="overlay-prev">← 上一页</button>
+      <span class="overlay-pagenum" id="overlay-pagenum">1 / 1</span>
+      <button class="overlay-nav overlay-next" id="overlay-next">下一页 →</button>
+      <button class="overlay-grid" id="overlay-grid" title="页码跳转">☰</button>
+      <button class="overlay-fullscreen" id="overlay-fullscreen" title="全屏查看">⤢</button>
+      <button class="overlay-close" id="overlay-close">×</button>
+    </div>
+    <div class="overlay-body">
+      <div class="image-viewer" id="image-viewer">
+        <img id="overlay-image" src="" alt="日记页" />
+      </div>
+      <div class="overlay-meta">
+        <div class="meta-line">
+          <span class="meta-item" id="meta-date"></span>
+          <span class="meta-item" id="meta-author"></span>
+          <span class="meta-item" id="meta-signature"></span>
+        </div>
+        <p class="meta-note" id="meta-note"></p>
+      </div>
+      <!-- 贴纸评论区 -->
+      <div class="sticky-comment-section" id="sticky-comment-section">
+        <h3 class="sticky-comment-title">便签留言</h3>
+        <div class="sticky-note-wall" id="sticky-note-wall">
+          <!-- 便签由 JS 动态加载 -->
+        </div>
+        <div class="sticky-comment-form">
+          <input type="text" class="comment-name" id="comment-name" placeholder="你的名字" maxlength="20">
+          <textarea class="comment-text" id="comment-text" placeholder="写张便签贴上去..." maxlength="200" rows="2"></textarea>
+          <div class="sticky-color-picker" id="sticky-color-picker">
+            <button class="color-btn active" data-color="yellow" style="background:#fff3a0;" title="黄色"></button>
+            <button class="color-btn" data-color="pink" style="background:#ffc6d4;" title="粉色"></button>
+            <button class="color-btn" data-color="blue" style="background:#a0d8ff;" title="蓝色"></button>
+            <button class="color-btn" data-color="green" style="background:#a0e8c0;" title="绿色"></button>
+            <button class="color-btn" data-color="orange" style="background:#ffd9a0;" title="橙色"></button>
+            <button class="color-btn" data-color="purple" style="background:#d9c6ff;" title="紫色"></button>
+            <button class="color-btn" data-color="mint" style="background:#a0f0e0;" title="薄荷绿"></button>
+            <button class="color-btn" data-color="rose" style="background:#ffd0e0;" title="玫瑰粉"></button>
+          </div>
+          <button class="comment-submit" id="comment-submit">贴上去</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 留言墙弹层 -->
+<div class="overlay" id="message-overlay">
+  <div class="overlay-content">
+    <div class="overlay-header">
+      <span class="overlay-pagenum">留言墙</span>
+      <button class="overlay-close" id="message-close">×</button>
+    </div>
+    <div class="message-body">
+      <!-- 名字节缩略卡（原签名墙入口） -->
+      <div class="message-roster" id="message-roster">
+        <img id="message-roster-img" src="" alt="名字录" loading="lazy">
+        <div class="message-roster-label">
+          <span class="roster-title">名字录</span>
+          <span class="roster-sub">这是我们的开始，点击查看</span>
+        </div>
+        <span class="message-roster-arrow">→</span>
+      </div>
+      <h3 class="message-notes-title">便签留言</h3>
+      <div class="message-notes" id="message-notes">
+        <!-- 便签由 JS 动态汇总 -->
+      </div>
+      <p class="message-hint">留言请到对应日记页的详情页贴便签，点击便签可跳转到那一页</p>
+    </div>
+  </div>
+</div>
+
+<!-- 页码网格弹层 -->
+<div class="page-grid-overlay" id="page-grid-overlay">
+  <div class="page-grid-content">
+    <div class="page-grid-header">
+      <span class="page-grid-title">跳转到第几页？</span>
+      <button class="overlay-close" id="page-grid-close">×</button>
+    </div>
+    <div class="page-grid" id="page-grid">
+      <!-- 页码格子由 JS 动态生成 -->
+    </div>
+  </div>
+</div>
+
+<!-- 跳转面板弹层（日期 + 页码） -->
+<div class="jump-overlay" id="jump-overlay">
+  <div class="jump-panel">
+    <div class="jump-header">
+      <span class="jump-title">跳转</span>
+      <button class="overlay-close" id="jump-close">×</button>
+    </div>
+    <div class="jump-body">
+      <div class="jump-field">
+        <label for="jump-date">按日期</label>
+        <input type="date" id="jump-date" class="jump-date-input">
+      </div>
+      <div class="jump-field">
+        <label for="jump-num">按页码</label>
+        <input type="number" id="jump-num" class="jump-num-input" placeholder="1-97" min="1" max="97">
+      </div>
+      <button class="jump-confirm" id="jump-confirm">确定跳转</button>
+    </div>
+  </div>
+</div>
+
+<!-- 页脚 -->
+<footer class="footer">
+  <p>漂流日记本 · 共 <span id="total-pages">0</span> 页 · <span id="total-authors">0</span> 位作者</p>
+</footer>
+
+<script src="js/supabase.min.js"></script>
+<script src="js/app.js?v=10"></script>
+<script src="js/pagegrid.js?v=10"></script>
+<script src="js/calendar.js?v=10"></script>
+<script src="js/journey.js?v=10"></script>
+<script src="js/detail.js?v=10"></script>
+</body>
+</html>
